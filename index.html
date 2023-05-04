@@ -1,0 +1,511 @@
+
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+    <style type="text/css">
+      .grid-container {
+        margin-top: 10px;
+      }
+      .size-6 {
+        font-size: 12px;
+      }
+      .round-table {
+        margin-bottom: 30px;
+      }
+      #expected_dilution_error_msg,
+      #industry_ebita_multiple_error_msg {
+        font-size: 14px;
+        color: #f04124;
+        line-height: 35px;
+      }
+      #industry_ebita_multiplier_label_compare {
+        min-width: 145px;
+      }
+      #industry_ebita_multiplier {
+        max-width: 100px;
+        height: 39px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid-container">
+      <div class="grid-x">
+        <div class="cell">
+          <form id="calculate">
+            <div class="grid-container">
+
+              <div class="grid-x grid-padding-y">
+                <table class="round-table">
+                  <thead>
+                    <tr>
+                      <th width="20%">Option Pool</th>
+                      <th width="20%">A Round</th>
+                      <th width="20%">B Round</th>
+                      <th width="20%">C Round</th>
+                      <th width="20%">Other Rounds</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="input-group">
+                          <input id="option_pool" name="option_pool" class="input-group-field text-right percent" type="text" >
+                          <span class="input-group-label">%</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input id="a_round" name="a_round" class="input-group-field text-right percent" type="text" autocomplete="off">
+                          <span class="input-group-label">%</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input id="b_round" name="b_round" class="input-group-field text-right percent" type="text" autocomplete="off">
+                          <span class="input-group-label">%</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input id="c_round" name="c_round" class="input-group-field text-right percent" type="text" autocomplete="off">
+                          <span class="input-group-label">%</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="input-group">
+                          <input id="other_round" name="other_round" class="input-group-field text-right percent" type="text" autocomplete="off">
+                          <span class="input-group-label">%</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="investment_amount">Expected Dilution</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right percent" id="expected_dilution" name="expected_dilution" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <span></span>
+                  <small class="error" id="expected_dilution_error_msg"></small>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="investment_amount">Investment Amount</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="investment_amount" name="investment_amount" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <span></span>
+                </div>
+              </div>
+
+              <!-- 
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="required_return_multiple">Required Return Multiple</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right" id="required_return_multiple" name="required_return_multiple" type="text" value="40" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">40x is typical seed stage target</i>
+                </div>
+              </div>
+               -->
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="required_return_multiple">Required Return Multiple</label>
+                </div>
+                <div class="medium-4 cell">
+                  <div class="input-group">
+                    <input class="text-center input-group-field" id="required_return_multiple" name="required_return_multiple" type="text" value="40" readonly>
+                    <span class="input-group-label"><span id="industry_ebita_multiplier_label_compare">0</span></span>
+                  </div>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">40x is typical seed stage target</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="industry_sales_multiple">Industry Sales Multiple</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right" id="industry_sales_multiple" name="industry_sales_multiple" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">x sales = valuation</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="industry_ebita_multiple">Industry EBITA Multiple</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right" id="industry_ebita_multiple" name="industry_ebita_multiple" type="text">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">x EBITA = valuation</i>
+                  <small class="error" id="industry_ebita_multiple_error_msg"></small>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="valuation_or_cap">Valuation (or Cap)</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="valuation_or_cap" name="valuation_or_cap" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">post money</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="ownership">% Ownership</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right percent" id="ownership" name="ownership" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i></i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="required_exit">Required Exit</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="required_exit" name="required_exit" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i></i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="required_return">Required Return</label>
+                </div>
+                <div class="medium-4 cell">
+                  <div class="input-group">
+                    <input class="text-right money" id="required_return" name="required_return" type="text" readonly>
+                    <input class="text-right money" id="industry_ebita_multiplier" name="industry_ebita_multiplier" type="text">
+                    <div class="input-group-button">
+                      <select id="industry_ebita_multiplier_list">
+                        <option value="0" selected="selected">0x</option>
+                        <option value="5">5x</option>
+                        <option value="10">10x</option>
+                        <option value="20">20x</option>
+                        <option value="40">40x</option>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- 
+                  <div class="input-group">
+                    <input class="text-right money" id="required_return" name="required_return" type="text" readonly>
+                    <div class="input-group-button">
+                      <input type="text" id="industry_ebita_multiplier" list="industry_ebita_multiplier_list" value="">
+                      <datalist id="industry_ebita_multiplier_list">
+                        <option value="0">0x</option>
+                        <option value="5">5x</option>
+                        <option value="10">10x</option>
+                        <option value="20">20x</option>
+                        <option value="40">40x</option>
+                      </datalist>
+                    </div>
+                  </div>
+                  -->
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">@ multiple considering dilution</i>
+                </div>
+              </div>
+
+              <br>
+              <h4>Market Size for Company / Solution</h4>
+              <br>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="tam">TAM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="tam" name="tam" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">Total Addressable Market</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="sam">SAM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="sam" name="sam" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">Serviceable Addressable Market</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="som">SOM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="som" name="som" type="text" autocomplete="off">
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">Serviceable Otainable Market (bottom up in 3 years)</i>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="annnual_sales">Annnual Sales</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right money" id="annnual_sales" name="annnual_sales" type="text"  readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">@ 20% YoY growth trend</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="percentage_of_tam">% of TAM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right percent" id="percentage_of_tam" name="percentage_of_tam" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">% of TAM  in sales</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="percentage_of_sam">% of SAM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right percent" id="percentage_of_sam" name="percentage_of_sam" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">% of SAM  in sales</i>
+                </div>
+              </div>
+
+              <div class="grid-x grid-padding-x">
+                <div class="medium-3 cell">
+                  <label for="percentage_of_som">% of SOM</label>
+                </div>
+                <div class="medium-4 cell">
+                  <input class="text-right percent" id="percentage_of_som" name="percentage_of_som" type="text" readonly>
+                </div>
+                <div class="medium-5 cell">
+                  <i class="size-6">may not be relevant. SOM is first 3 years</i>
+                </div>
+              </div>
+
+              <!-- <div class="grid-x grid-padding-x ">
+                <div class="medium-3 cell">&nbsp;</div>
+                <div class="medium-4 cell">
+                  <br>
+                  <button class="button submit success expanded"><strong>Calculate</strong></button>
+                </div>
+              </div> -->
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/what-input.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/jquery.inputmask.min.js"></script>
+    <script src="js/app.js"></script>
+    <script type="text/javascript">
+      var lowest_for_seed = 50;
+
+      $(function(){
+        $('.percent').inputmask('decimal',
+          { 'alias': 'numeric',
+            'autoGroup': true,
+            'digits': 2,
+            'radixPoint': ".",
+            'digitsOptional': false,
+            'allowMinus': false,
+            //'prefix': '$ ',
+            'placeholder': '0'
+          }
+        );
+        $('.money').inputmask('decimal',
+          { 'alias': 'numeric',
+            'groupSeparator': ',',
+            'autoGroup': true,
+            'digits': 0,
+            'radixPoint': ".",
+            'digitsOptional': false,
+            'allowMinus': false,
+            //'prefix': '$ ',
+            'placeholder': '0'
+          }
+        );
+        $('#ownership').inputmask('decimal',
+          { 'alias': 'numeric',
+            'autoGroup': true,
+            'digits': 4,
+            'radixPoint': ".",
+            'digitsOptional': false,
+            'allowMinus': false,
+            'placeholder': '0'
+          }
+        );
+        $('#industry_ebita_multiplier_list').on('change', function(){
+          var value = $(this).val();
+          $('#industry_ebita_multiplier').val(value);
+          $('#industry_ebita_multiplier_label_compare').text(value);
+        });
+        $('#calculate').submit(function(e){
+          e.preventDefault();
+        });
+        $('#option_pool, #a_round, #b_round, #c_round, #other_round, #investment_amount, #industry_sales_multiple, #industry_ebita_multiple, #industry_ebita_multiplier, #valuation_or_cap, #tam, #sam, #som').change(function(e){
+          var option_pool = 0;
+          var a_round = 0;
+          var b_round = 0;
+          var b_round = 0;
+          var c_round = 0;
+          var other_round = 0;
+          var investment_amount = 0;
+          var required_return_multiple = parseFloat($('#required_return_multiple').val());
+          var industry_sales_multiple = 0;
+          var industry_ebita_multiple = 0;
+          var industry_ebita_multiplier = 0;
+          var valuation_or_cap = 0;
+          var tam = 0;
+          var sam = 0;
+          var som = 0;
+          
+          if ($('#option_pool').val() != '') {
+            option_pool = parseFloat($('#option_pool').val().replace(/\,/g, ""));
+          }
+          if ($('#a_round').val() != '') {
+            a_round = parseFloat($('#a_round').val().replace(/\,/g, ""));
+          }
+          if ($('#b_round').val() != '') {
+            b_round = parseFloat($('#b_round').val().replace(/\,/g, ""));
+          }
+          if ($('#c_round').val() != '') {
+            c_round = parseFloat($('#c_round').val().replace(/\,/g, ""));
+          }
+          if ($('#other_round').val() != '') {
+            other_round = parseFloat($('#other_round').val().replace(/\,/g, ""));
+          }
+          if ($('#investment_amount').val() != '') {
+            investment_amount = parseFloat($('#investment_amount').val().replace(/\,/g, ""));
+          }
+
+          if ($('#industry_ebita_multiple').val() != '') {
+            industry_ebita_multiple = parseFloat($('#industry_ebita_multiple').val());
+          }
+          if ($('#industry_ebita_multiplier').val() != '') {
+            industry_ebita_multiplier = parseFloat($('#industry_ebita_multiplier').val());
+          }
+          if ($('#industry_sales_multiple').val() != '') {
+            industry_sales_multiple = parseFloat($('#industry_sales_multiple').val().replace(/\,/g, ""));
+          }
+          if ($('#valuation_or_cap').val() != '') {
+            valuation_or_cap = parseFloat($('#valuation_or_cap').val().replace(/\,/g, ""));
+          }
+          if ($('#tam').val() != '') {
+            tam = parseFloat($('#tam').val().replace(/\,/g, ""));
+          }
+          if ($('#sam').val() != '') {
+            sam = parseFloat($('#sam').val().replace(/\,/g, ""));
+          }
+          if ($('#som').val() != '') {
+            som = parseFloat($('#som').val().replace(/\,/g, ""));
+          }
+
+          var round_sum = roundSum(option_pool, a_round, b_round, c_round, other_round);
+
+          if (round_sum < 25) {
+            $('#expected_dilution_error_msg').show().text('Advisory: Dilution is typically at least 25%');
+            return false;
+          } else {
+            $('#expected_dilution_error_msg').hide().text('');
+          }
+
+          if (industry_ebita_multiplier == 0) {
+            $('#industry_ebita_multiple').val('');
+            $('#industry_ebita_multiple_error_msg').show().text('Advisory: Required Return is required!');
+          } else {
+            $('#industry_ebita_multiple_error_msg').hide().text('');
+          }
+
+          var expected_dilution = expectedDilution(round_sum);
+          var ownership = (valuation_or_cap == 0)? 0 : ((investment_amount / valuation_or_cap) || 0) * 100;
+          var required_exit = (required_return_multiple * valuation_or_cap) / (1 - (expected_dilution / 100));
+          var required_return = ownership * (required_exit / 100);
+          var annnual_sales = parseFloat((required_exit == 0)? 0 : required_exit / industry_sales_multiple).toFixed(2);
+          var percentage_of_tam = (tam == 0)? 0 : (annnual_sales / tam) * 100;
+          var percentage_of_sam = (sam == 0)? 0 : ((annnual_sales / sam) * 100) / 100;
+          var percentage_of_som = (som == 0)? 0 : (annnual_sales / som) * 100;
+
+          $('#industry_ebita_multiplier_label_compare').text(industry_ebita_multiplier);
+          $('#expected_dilution').val(parseFloat(expected_dilution).toFixed(0));
+          $('#industry_ebita_multiple').val(industry_ebita_multiple * industry_ebita_multiplier);
+          $('#ownership').val(parseFloat(ownership).toFixed(4));
+          $('#required_exit').val(Math.floor(required_exit));
+          $('#required_return').val(parseFloat(required_return));
+          $('#annnual_sales').val(parseFloat(annnual_sales));
+          $('#percentage_of_tam').val(parseFloat(percentage_of_tam).toFixed(2));
+          $('#percentage_of_sam').val(parseFloat(percentage_of_sam * 100).toFixed(2));
+          $('#percentage_of_som').val(parseFloat(percentage_of_som).toFixed(2));
+        });
+      });
+
+      function roundSum(option_pool, a_round, b_round, c_round, other_round) {
+        return option_pool + a_round + b_round + c_round + other_round;
+      }
+
+      function expectedDilution(round_sum) {
+        var lowest_for_seed_percentage = lowest_for_seed;
+        if (round_sum > lowest_for_seed_percentage) {
+          return round_sum;
+        } else {
+          return lowest_for_seed;
+        }
+      }
+    </script>
+  </body>
+</html>
